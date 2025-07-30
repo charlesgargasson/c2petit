@@ -3,7 +3,7 @@
 
 import logging
 
-logger = logging.getLogger()
+logger = logging.getLogger("c2p")
 
 def configure_logger():
 
