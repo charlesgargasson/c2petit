@@ -159,6 +159,7 @@ class C2P(object):
         web.post('/stop', self.API_Stop),
         web.post('/listener/del', self.API_DeleteListener),
         web.post('/listener/add', self.API_AddListener),
+        web.get('/beacon', self.API_GetBeacons),
         web.post('/beacon/update/{beaconuuid}', self.API_UpdateBeacon),
         web.get('/beacon/task/{beaconuuid}/{taskId}', self.API_GetBeaconTask),
         ])
@@ -225,13 +226,14 @@ class C2P(object):
         data = await req.text()
         data = json.loads(data)
 
+        tasks = []
         if 'tasks' in data.keys():
             for task in data['tasks']:
                 async with beacon.lock:
-                    beacon.addTask(task)
+                    tasks.append(beacon.addTask(task))
 
         msg = f"Updated"
-        return web.json_response({"msg": msg})
+        return web.json_response({"msg": msg, "tasks": tasks})
     
     async def API_GetBeaconTask(self, req):
         """Retrieve all informations about a task"""
@@ -273,6 +275,11 @@ class C2P(object):
         """List external listeners"""
         listeners = [x for x in self.listeners.keys()]
         return web.json_response(listeners, status=200)
+
+    async def API_GetBeacons(self, req):
+        """List external listeners"""
+        beacons = [x for x in self.beacons.keys()]
+        return web.json_response(beacons, status=200)
 
     async def API_AddListener(self, req):
         """Add new external listener"""
