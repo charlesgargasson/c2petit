@@ -8,8 +8,6 @@ import json
 import time
 from pathlib import Path
 
-import src.beacons.beacon # include for pipx
-
 from src.core.logger_config import configure_logger, logger
 
 class Beacon(object):
